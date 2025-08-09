@@ -1,6 +1,6 @@
-from flask import Flask, request # type: ignore
-from twilio.twiml.messaging_response import MessagingResponse  # type: ignore
-import requests # type: ignore
+from flask import Flask, request
+from twilio.twiml.messaging_response import MessagingResponse
+import requests
 import json
 
 app = Flask(__name__)
