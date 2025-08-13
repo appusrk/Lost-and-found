@@ -30,8 +30,8 @@
 
 	    private String location;
 
-	    @Column(name = "date_found")
-	    private LocalDate dateFound;
+	    @Column(name = "date_lost")
+	    private LocalDate dateLost;
 
 	    @Column(name = "image_url")
 	    private String imageUrl;
@@ -39,13 +39,7 @@
 	    @Column(name = "created_at")
 	    private LocalDateTime createdAt;
 
-	    @Enumerated(EnumType.STRING)
-	    private Status status = Status.pending;
 
-	    
-	    public enum Status {
-	        pending, matched, claimed
-	    }
 
 
 		public int getId() {
@@ -98,13 +92,15 @@
 		}
 
 
-		public LocalDate getDateFound() {
-			return dateFound;
+		
+
+		public LocalDate getDateLost() {
+			return dateLost;
 		}
 
 
-		public void setDateFound(LocalDate dateFound) {
-			this.dateFound = dateFound;
+		public void setDate_lost(LocalDate dateLost) {
+			this.dateLost = dateLost;
 		}
 
 
@@ -128,20 +124,13 @@
 		}
 
 
-		public Status getStatus() {
-			return status;
-		}
-
-
-		public void setStatus(Status status) {
-			this.status = status;
-		}
-
+	
 
 		
 
 	    
 	}
+	
 
 
 
