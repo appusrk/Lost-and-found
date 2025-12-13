@@ -5,12 +5,13 @@ import { RouterOutlet } from '@angular/router';
 
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { LoadingComponent } from '../shared/loading/loading.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent, FooterComponent, RouterOutlet,  CommonModule],
+  imports: [HeaderComponent, FooterComponent, RouterOutlet, CommonModule, LoadingComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

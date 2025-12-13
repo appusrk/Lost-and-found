@@ -26,10 +26,10 @@ export class IssuesComponent implements OnInit {
   }
 
   loadFoundItems() {
-    this.http.get<any[]>(`http://localhost:8080/api/issue/user/${this.usn}`)
+    this.http.get<any[]>(`http://localhost:8080/api/issues`)
       .subscribe({
         next: (res) => this.foundItems = res,
-        error: (err) => console.error('Error loading found items', err)
+        error: (err) => console.error('Error loading issues', err)
       });
   }
 }

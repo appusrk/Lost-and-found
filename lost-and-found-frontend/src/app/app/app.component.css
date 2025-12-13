@@ -1,5 +1,5 @@
 .main-layout {
-  display: flex;
+  
   margin-top: 70px; /* equal to header height */
   min-height: calc(100vh - 70px);
 }

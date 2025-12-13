@@ -31,6 +31,17 @@ public class Match_history {
     @JoinColumn(name = "USN", referencedColumnName = "USN", nullable = false)
     private Users user;
 
+    @Column(name = "notification_sent")
+    private boolean notificationSent = false;
+
+    public boolean isNotificationSent() {
+        return notificationSent;
+    }
+
+    public void setNotificationSent(boolean notificationSent) {
+        this.notificationSent = notificationSent;
+    }
+
     // Getters and setters
 
     public Integer getId() {

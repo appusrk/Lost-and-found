@@ -6,6 +6,7 @@ import com.example.lostandfound.model.Match_history;
 import com.example.lostandfound.repository.FoundItemRepository;
 import com.example.lostandfound.repository.LostItemRepository;
 import com.example.lostandfound.repository.MatchingHistoryRepository;
+
 import org.springframework.stereotype.Service;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
@@ -33,11 +34,8 @@ public class MatchingServices {
         this.aiService = aiService;
     }
 
-    public NotificationService getNotificationService() {
-        return notificationService;
-    }
+    // ---------------- HELPER FUNCTIONS ----------------
 
-    // === Fuzzy matching ===
     private boolean isNameSimilar(String name1, String name2) {
         if (name1 == null || name2 == null) return false;
         name1 = name1.toLowerCase();
@@ -79,11 +77,12 @@ public class MatchingServices {
         return false;
     }
 
-    // === Main matching logic for lost items ===
-    public void findMatchesForLost(Lost_items lost) {
-        List<Found_items> allFound = foundRepo.findAll();
+    // ---------------- MAIN LOGIC ----------------
 
-        List<Found_items> matches = allFound.stream()
+    public void findMatchesForLost(Lost_items lost) {
+
+        List<Found_items> matches = foundRepo.findAll()
+                .stream()
                 .filter(f -> {
                     boolean nameMatch = isNameSimilar(f.getItemName(), lost.getItemName());
                     boolean descMatch = isDescriptionSimilar(f.getDescription(), lost.getDescription());
@@ -92,38 +91,54 @@ public class MatchingServices {
                     boolean basicMatch = nameMatch && descMatch;
                     boolean imageCondition = imageMatch || lost.getImageUrl() == null || f.getImageUrl() == null;
 
-                    return (basicMatch || imageCondition) && f.getLocation().equalsIgnoreCase(lost.getLocation());
+                    return (basicMatch || imageCondition)
+                            && f.getLocation().equalsIgnoreCase(lost.getLocation());
                 })
                 .collect(Collectors.toList());
 
         for (Found_items found : matches) {
-            // Save match history
-        	if (matchHistoryRepo.findByLostItemAndFoundItem(lost, found).isEmpty()) {
-            Match_history match = new Match_history();
-            match.setLostItem(lost);
-            match.setUser(lost.getUser()); 
-            match.setFoundItem(found);
-            match.setLostContact(lost.getEmail());
-            match.setFoundContact(found.getEmail());
-            matchHistoryRepo.save(match);
 
-            // Send notifications
+            Match_history existing = matchHistoryRepo.findByLostItemAndFoundItem(lost, found)
+                    .orElse(null);
+
+            if (existing == null) {
+                // First time match → create row
+                existing = new Match_history();
+                existing.setLostItem(lost);
+                existing.setFoundItem(found);
+                existing.setUser(lost.getUser());
+                existing.setLostContact(lost.getEmail());
+                existing.setFoundContact(found.getEmail());
+                existing.setNotificationSent(false); // default
+                matchHistoryRepo.save(existing);
+            }
+
+            // If notification already sent, skip it
+            if (existing.isNotificationSent()) {
+                continue;
+            }
+
+            // Send notification ONCE
             String subject = "Possible Match Found!";
-            String body = "Hi!\n\nWe found a possible match for your lost item: " + lost.getItemName()
+            String body = "Hi!\n\nWe found a possible match for your lost item: "
+                    + lost.getItemName()
                     + "\nDescription: " + lost.getDescription()
                     + "\nLocation: " + lost.getLocation()
                     + "\nContact the other user: " + found.getEmail()
                     + "\n\nFindify Team";
+
             notificationService.sendEmail(lost.getEmail(), subject, body);
             notificationService.sendEmail(found.getEmail(), subject, body);
+
+            existing.setNotificationSent(true);
+            matchHistoryRepo.save(existing);
         }
-    }}
+    }
 
-    // === Main matching logic for found items ===
     public void findMatchesForFound(Found_items found) {
-        List<Lost_items> allLost = lostRepo.findAll();
 
-        List<Lost_items> matches = allLost.stream()
+        List<Lost_items> matches = lostRepo.findAll()
+                .stream()
                 .filter(l -> {
                     boolean nameMatch = isNameSimilar(l.getItemName(), found.getItemName());
                     boolean descMatch = isDescriptionSimilar(l.getDescription(), found.getDescription());
@@ -132,28 +147,44 @@ public class MatchingServices {
                     boolean basicMatch = nameMatch && descMatch;
                     boolean imageCondition = imageMatch || found.getImageUrl() == null || l.getImageUrl() == null;
 
-                    return (basicMatch || imageCondition) && l.getLocation().equalsIgnoreCase(found.getLocation());
+                    return (basicMatch || imageCondition)
+                            && l.getLocation().equalsIgnoreCase(found.getLocation());
                 })
                 .collect(Collectors.toList());
 
         for (Lost_items lost : matches) {
-        	if (matchHistoryRepo.findByLostItemAndFoundItem(lost, found).isEmpty()) {
-            Match_history match = new Match_history();
-            match.setLostItem(lost);
-            match.setFoundItem(found);
-            match.setUser(lost.getUser()); 
-            match.setLostContact(lost.getEmail());
-            match.setFoundContact(found.getEmail());
-            matchHistoryRepo.save(match);
+
+            Match_history existing = matchHistoryRepo.findByLostItemAndFoundItem(lost, found)
+                    .orElse(null);
+
+            if (existing == null) {
+                existing = new Match_history();
+                existing.setLostItem(lost);
+                existing.setFoundItem(found);
+                existing.setUser(lost.getUser());
+                existing.setLostContact(lost.getEmail());
+                existing.setFoundContact(found.getEmail());
+                existing.setNotificationSent(false);
+                matchHistoryRepo.save(existing);
+            }
+
+            if (existing.isNotificationSent()) {
+                continue;
+            }
 
             String subject = "Possible Match Found!";
-            String body = "Hi!\n\nWe found a possible match for your found item: " + found.getItemName()
+            String body = "Hi!\n\nWe found a possible match for your found item: "
+                    + found.getItemName()
                     + "\nDescription: " + found.getDescription()
                     + "\nLocation: " + found.getLocation()
                     + "\nContact the other user: " + lost.getEmail()
                     + "\n\nFindify Team";
+
             notificationService.sendEmail(found.getEmail(), subject, body);
             notificationService.sendEmail(lost.getEmail(), subject, body);
-        }}
+
+            existing.setNotificationSent(true);
+            matchHistoryRepo.save(existing);
+        }
     }
 }

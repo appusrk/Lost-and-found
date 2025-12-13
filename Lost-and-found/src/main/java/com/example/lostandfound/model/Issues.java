@@ -21,8 +21,8 @@ public class Issues {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "reported_contact")
-    private String reportedContact;
+    @Column(name = "description")
+    private String description;
     
     @Column(name = "image_hash")
     private String imageHash;  
@@ -78,12 +78,14 @@ public class Issues {
 		this.imageUrl = imageUrl;
 	}
 
-	public String getReportedContact() {
-		return reportedContact;
+	
+
+	public String getDescription() {
+		return description;
 	}
 
-	public void setReportedContact(String reportedContact) {
-		this.reportedContact = reportedContact;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getImageHash() {

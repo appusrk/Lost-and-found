@@ -11,7 +11,7 @@
       <!-- Name -->
      <div class="form-group">
       Choose Issue Department*
-  <select name="issuedept" [(ngModel)]="issueDept" required #issueDeptRef="ngModel" (change)="onDeptChange()">
+  <select name="issuedept" [(ngModel)]="dept" required #issueDeptRef="ngModel" >
     <option value="gym">Gym</option>
     <option value="security">Security</option>
     <option value="cleaning">Cleaning</option>
@@ -25,20 +25,12 @@
     <small>Please select the department </small>
  
 </div>
-      <!-- Other -->
-<div class="form-group" *ngIf="showOther">
-  <input type="text" placeholder="Issue" name="other"
-         [(ngModel)]="other" required  #otherRef="ngModel" />
-  <div *ngIf="otherRef.invalid && otherRef.touched" class="text-danger">
-    <small *ngIf="otherRef.errors?.['required']">Enter the issue </small>
-  </div>
-</div>
-
+ 
  <!--Description -->
       <div class="form-group">
         <input type="text" placeholder="Description*" name="description"
-               [(ngModel)]="location" required #departmentRef="ngModel" />
-        <div *ngIf="departmentRef.invalid && departmentRef.touched" class="text-danger">
+               [(ngModel)]="description" required #descriptionRef="ngModel" />
+        <div *ngIf="descriptionRef.invalid && descriptionRef.touched" class="text-danger">
           <small>Please describe the issue</small>
         </div>
       </div>
@@ -46,8 +38,8 @@
       <!--Location -->
       <div class="form-group">
         <input type="text" placeholder="Location*" name="location"
-               [(ngModel)]="location" required #departmentRef="ngModel" />
-        <div *ngIf="departmentRef.invalid && departmentRef.touched" class="text-danger">
+               [(ngModel)]="location" required #locationRef="ngModel" />
+        <div *ngIf="locationRef.invalid && locationRef.touched" class="text-danger">
           <small>Please specify the location</small>
         </div>
       </div>
