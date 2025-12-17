@@ -1,0 +1,150 @@
+package com.example.lostandfound.controller;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import com.example.lostandfound.model.Issues;
+import com.example.lostandfound.model.Users;
+import com.example.lostandfound.repository.IssueRepository;
+import com.example.lostandfound.repository.UserRepository;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
+import com.example.lostandfound.services.NotificationService;
+
+@RestController
+@RequestMapping("/api/issues")
+public class IssueController {
+
+    private final IssueRepository issuesRepository;
+    private final UserRepository userRepository;
+    private final Path uploadDir = Paths.get("uploads");
+    private final NotificationService notificationService;
+
+
+    public IssueController(IssueRepository issuesRepository, UserRepository userRepository, NotificationService notificationService) {
+        this.issuesRepository = issuesRepository;
+        this.userRepository = userRepository;
+        this.notificationService = notificationService;
+    }
+
+    // ✔ Get all issues
+    @GetMapping
+    public List<Issues> getAllIssues() {
+        return issuesRepository.findAll();
+    }
+    private String getDeptEmail(String dept) {
+        switch (dept.toLowerCase()) {
+            case "canteen":
+                return "canteen@college.edu";
+            case "library":
+                return "library@college.edu";
+            case "hostel":
+                return "hostel@college.edu";
+            case "cleaning":
+                return "maintenance@college.edu";
+            case "security":
+                return "security@college.edu";
+            case "gym":
+                return "gym@college.edu";
+            default:
+                return "1at22is013@visioneer.atria.edu";
+        }
+    }
+
+
+    // ✔ Create issue 
+    @PostMapping
+    public ResponseEntity<?> createIssue(
+            @RequestParam("issue_dept") String issueDept,
+            @RequestParam("description") String description,
+            @RequestParam("location") String location,
+            @RequestParam("usn") String usn,
+            @RequestParam(value = "image", required = false) MultipartFile image
+    ) {
+        try {
+            Issues issue = new Issues();
+            issue.setIssueDept(issueDept);
+            issue.setDescription(description);
+            issue.setLocation(location);
+            issue.setReportedOn(LocalDateTime.now());
+
+            // Fetch user by USN
+            Users user = userRepository.findByUsn(usn);
+            if (user == null) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("User with USN " + usn + " not found");
+            }
+            issue.setUser(user);
+
+            // Handle image upload
+            if (image != null && !image.isEmpty()) {
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
+                Path filePath = uploadDir.resolve(filename);
+                Files.write(filePath, image.getBytes());
+
+                issue.setImageUrl(filePath.toString());
+
+                // SHA-256 hash (same as Found controller)
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                byte[] hashBytes = digest.digest(image.getBytes());
+                StringBuilder sb = new StringBuilder();
+                for (byte b : hashBytes) {
+                    sb.append(String.format("%02x", b));
+                }
+                issue.setImageHash(sb.toString());
+            }
+
+            issuesRepository.save(issue);
+            String deptEmail = getDeptEmail(issue.getIssueDept());
+
+            String subject = " New Issue Reported - " + issue.getIssueDept();
+
+            String body =
+                    "A new issue has been reported.\n\n" +
+                    "Location: " + issue.getLocation() + "\n" +
+                    "Description: " + issue.getDescription() + "\n" +
+                    "Reported On: " + issue.getReportedOn();
+
+            notificationService.sendEmail(deptEmail, subject, body);
+
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Issue reported successfully");
+            response.put("issue", issue);
+
+            return ResponseEntity.ok(response);
+
+        } catch (IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(500)
+                    .body("Error saving issue: " + e.getMessage());
+        }
+    }
+
+    // ✔ Get issues by user (placeholder – refine later)
+    @GetMapping("/user/{usn}")
+    public List<Issues> getIssuesByUser(@PathVariable String usn) {
+        return issuesRepository.findAll();
+    }
+
+    // ✔ Delete issue
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteIssue(@PathVariable int id) {
+        issuesRepository.deleteById(id);
+        return ResponseEntity.ok("Issue deleted successfully");
+    }
+}

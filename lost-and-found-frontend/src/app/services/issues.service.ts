@@ -13,7 +13,7 @@ export class IssuesService {
 
   // Create an issue
   createIssue(formData: FormData): Observable<any> {
-    return this.http.post(`${this.baseUrl}/create`, formData);
+    return this.http.post(`${this.baseUrl}`, formData);
   }
 
   // Get all issues

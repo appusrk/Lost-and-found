@@ -1,10 +1,17 @@
 package com.example.lostandfound.controller;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.Objects;
 
 import com.example.lostandfound.model.Issues;
 import com.example.lostandfound.model.Users;
 import com.example.lostandfound.repository.IssueRepository;
 import com.example.lostandfound.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,17 +37,33 @@ public class IssueController {
 
     // ✔ Create issue
     @PostMapping("/create")
-    public Issues createIssue(@RequestBody Issues issue) {
+    public Issues createIssue(
+            @RequestParam String issue_dept,
+            @RequestParam String description,
+            @RequestParam String location,
+            @RequestParam String usn,
+            @RequestPart(required = false) MultipartFile image
+    ) throws IOException {
 
-        String usn = issue.getUser().getUsn();  
         Users user = userRepository.findByUsn(usn);
+        if (user == null) throw new RuntimeException("User not found: " + usn);
 
-        if (user == null) {
-            throw new RuntimeException("User not found: " + usn);
-        }
-
-        issue.setUser(user);
+        Issues issue = new Issues();
+        issue.setIssueDept(issue_dept);
+        issue.setDescription(description);
+        issue.setLocation(location);
+        issue.setUser(user);            // ← Correct way to set FK
         issue.setReportedOn(LocalDateTime.now());
+
+        if (image != null && !image.isEmpty()) {
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path filePath = Paths.get("uploads").resolve(fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, image.getBytes());
+
+            issue.setImageUrl(filePath.toString());
+            issue.setImageHash(Objects.toString(image.hashCode()));
+        }
 
         return issuesRepository.save(issue);
     }

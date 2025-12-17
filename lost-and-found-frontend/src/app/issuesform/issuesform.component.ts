@@ -44,7 +44,7 @@ export class IssuesformComponent {
     formData.append('usn', user.usn);
     if (this.selectedFile) formData.append('image', this.selectedFile);
 
-    this.http.post('http://localhost:8080/api/issues/create', formData).subscribe({
+    this.http.post('http://localhost:8080/api/issues', formData).subscribe({
       next: () => {
         Swal.fire("✅ Report Submitted!", "We’ll resolve it as soon as possible 🤝✨", "success");
         form.resetForm();
@@ -75,3 +75,4 @@ export class IssuesformComponent {
     }
   }
 }
+
