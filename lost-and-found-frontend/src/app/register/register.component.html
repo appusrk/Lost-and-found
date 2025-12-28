@@ -22,6 +22,7 @@
     <option value="">Choose User Level*</option>
     <option value="student">Student</option>
     <option value="faculty">Faculty</option>
+    <option value="admin">Admin</option>
   </select>
   <div *ngIf="userLevelRef.invalid && userLevelRef.touched" class="text-danger">
     <small>Please select a user level </small>
@@ -49,12 +50,26 @@
 
 
       <!-- Department -->
-      <div class="form-group">
+      <div class="form-group" *ngIf="showDeptext">
         <input type="text" placeholder="Department*" name="department"
                [(ngModel)]="department" required #departmentRef="ngModel" />
         <div *ngIf="departmentRef.invalid && departmentRef.touched" class="text-danger">
           <small>Please enter your department </small>
         </div>
+        </div>
+      <!-- Issue Department -->
+      <div class="form-group" *ngIf="showDept">
+              Choose Department*
+        <select name="issuedept" [(ngModel)]="department" required #departmentRef="ngModel"  >
+          <option value="gym">Gym</option>
+          <option value="security">Security</option>
+          <option value="cleaning">Cleaning</option>
+          <option value="canteen">Canteen</option>
+          <option value="library">Library</option>
+          <option value="hostel">Hostel</option>
+          <option value="other">Other</option>
+
+        </select>
       </div>
 
       <!-- Email -->

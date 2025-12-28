@@ -31,14 +31,14 @@ public class Issues {
     private LocalDateTime reportedOn =LocalDateTime.now(); 
     
     @Column(name = "status")
-    private boolean status;
+    private String status;
     
     
-    public boolean isStatus() {
+    public String isStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 	@ManyToOne

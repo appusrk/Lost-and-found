@@ -1,35 +1,62 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { IssuesService } from '../../services/issues.service';
 
 @Component({
   selector: 'app-issues',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, MatSnackBarModule],
   templateUrl: './issues.component.html',
   styleUrls: ['./issues.component.css']
 })
 export class IssuesComponent implements OnInit {
 
-  foundItems: any[] = [];
-  usn: string = '';
+  private issueService = inject(IssuesService);
+  private snackBar = inject(MatSnackBar);
 
-  constructor(private http: HttpClient) {}
+  issues: any[] = [];
+  isAdmin = false;
+  userDept = '';
 
   ngOnInit(): void {
-    const data = localStorage.getItem('user');
-    if (data) {
-      const user = JSON.parse(data);
-      this.usn = user.usn;
-      this.loadFoundItems();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    this.isAdmin = user.userLevel?.trim().toLowerCase() === 'admin';
+    this.userDept = user.department;
+
+    if (this.isAdmin) {
+      // ADMIN → only their department issues
+      this.issueService.getAllIssues().subscribe(data => {
+        this.issues = data.filter(
+          issue => issue.issueDept?.toLowerCase() === this.userDept?.toLowerCase()
+        );
+      });
+    } else {
+      // USER → own issues
+      this.issueService.getIssuesByUser(user.usn)
+        .subscribe(data => this.issues = data);
     }
   }
 
-  loadFoundItems() {
-    this.http.get<any[]>(`http://localhost:8080/api/issues`)
-      .subscribe({
-        next: (res) => this.foundItems = res,
-        error: (err) => console.error('Error loading issues', err)
+  updateStatus(issue: any) {
+    this.issueService.updateIssueStatus(issue.id, issue.status)
+      .subscribe(() => {
+        this.snackBar.open(
+          'Status updated successfully ✅',
+          'X',
+          { duration: 3000, panelClass: ['success-snackbar'] }
+        );
       });
+  }
+
+  getStatusClass(status: string) {
+    switch (status?.toLowerCase()) {
+      case 'open': return 'status-open';
+      case 'in progress': return 'status-progress';
+      case 'resolved': return 'status-resolved';
+      default: return 'status-open';
+    }
   }
 }

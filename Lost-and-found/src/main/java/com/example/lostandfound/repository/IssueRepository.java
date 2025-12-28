@@ -9,6 +9,8 @@ import com.example.lostandfound.model.Lost_items;
 
 	public interface IssueRepository extends JpaRepository<Issues, Integer> {
 		List<Issues> findAll();
+		List<Issues> findByIssueDept(String issueDept);
+
 
 	}
 

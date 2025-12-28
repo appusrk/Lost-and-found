@@ -75,7 +75,7 @@ public class IssueController {
             issue.setDescription(description);
             issue.setLocation(location);
             issue.setReportedOn(LocalDateTime.now());
-
+            issue.setStatus("Open");
             // Fetch user by USN
             Users user = userRepository.findByUsn(usn);
             if (user == null) {
@@ -134,11 +134,37 @@ public class IssueController {
                     .body("Error saving issue: " + e.getMessage());
         }
     }
+    
+ // ✔ Update issue status (ADMIN)
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateIssueStatus(
+            @PathVariable int id,
+            @RequestParam String status
+    ) {
+        Optional<Issues> optionalIssue = issuesRepository.findById(id);
 
-    // ✔ Get issues by user (placeholder – refine later)
+        if (!optionalIssue.isPresent()) {
+            return ResponseEntity
+                    .status(404)
+                    .body("Issue not found");
+        }
+
+        Issues issue = optionalIssue.get();
+        issue.setStatus(status);
+        issuesRepository.save(issue);
+
+        return ResponseEntity.ok("Status updated successfully");
+    }
+
+    // ✔ Get issues by user 
     @GetMapping("/user/{usn}")
     public List<Issues> getIssuesByUser(@PathVariable String usn) {
         return issuesRepository.findAll();
+    }
+ // ✔ Get issues by department (ADMIN)
+    @GetMapping("/dept/{dept}")
+    public List<Issues> getIssuesByDept(@PathVariable String dept) {
+        return issuesRepository.findByIssueDept(dept);
     }
 
     // ✔ Delete issue

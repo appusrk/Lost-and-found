@@ -8,6 +8,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { IssuesformComponent } from './issuesform/issuesform.component';
 import { IssuesComponent } from './dashboard/issues/issues.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { AdminpannelComponent } from './adminpannel/adminpannel.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -16,6 +17,8 @@ export const routes: Routes = [
   { path: 'lostform', component: LostComponent },
   { path: 'findform', component: FoundComponent },
   { path: 'forgotpassword',  component: ForgotPasswordComponent },
+  { path: 'issuesform', component: IssuesformComponent},
+  { path: 'adminpanel', component: AdminpannelComponent},
 
   {
   path: 'dashboard',
@@ -29,6 +32,5 @@ export const routes: Routes = [
   ]
 },
 
-  { path: 'issuesform', component: IssuesformComponent},
   { path: '**', redirectTo: 'dashboard' }
 ];

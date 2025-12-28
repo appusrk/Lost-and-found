@@ -1,148 +1,77 @@
+.container {
+  display: flex;
+  height: calc(100vh - 65px);
+}
 
 .content-area {
   flex: 1;
   padding: 3rem;
-  
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
-.container {
-  display: flex;
-  margin-top: 50px; /* offset for header */
-  height: calc(100vh - 65px);
-}
+
 /* Heading */
 h2 {
-  text-align: left;
   color: #bdd9f5;
   font-size: 30px;
   font-weight: 700;
-  margin: 2px 0 25px 0;
+  margin-bottom: 20px;
   border-left: 6px solid #2575fc;
   padding-left: 12px;
 }
 
-/* Form box */
-.form-box {
-  background-color: #fdfdfd;
-  border-radius: 12px;
-  padding: 25px 30px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
-}
-
-/* Form inputs */
-.form-box input[type="text"],
-.form-box input[type="email"],
-.form-box input[type="file"],
-.form-box textarea {
-  width: 100%;
-  padding: 10px 15px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  transition: border-color 0.3s;
-}
-
-.form-box input:focus,
-.form-box textarea:focus {
-  border-color: #2575fc;
-  outline: none;
-}
-
-/* Submit button */
-.register-btn {
-  background-color: #2575fc;
-  color: #fff;
-  border: none;
-  padding: 12px 25px;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.register-btn:hover {
-  background-color: #6a11cb;
-}
-
-/* Table Styling (keep your previous nice table) */
+/* Table */
 .report-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
-  background-color: #fff;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .report-table thead {
   background: linear-gradient(to right, #6a11cb, #2575fc);
-  color: white;
+  color: #fff;
 }
 
-.report-table thead th {
+.report-table th,
+.report-table td {
   padding: 12px 15px;
   text-align: left;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.report-table tbody tr {
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.3s;
 }
 
 .report-table tbody tr:hover {
-  background-color: #f0f4ff;
+  background: #f4f7ff;
 }
 
-.report-table tbody td {
-  padding: 10px 15px;
-  font-size: 15px;
-  color: #333;
+/* Buttons */
+.register-btn {
+  background: #2575fc;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-/* Empty message styling */
-p {
-  text-align: center;
-  color: #555;
-  font-size: 16px;
-  margin-top: 20px;
+/* STATUS BADGES */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
 }
 
-/* Responsive for mobile */
-@media screen and (max-width: 768px) {
-  .report-table thead {
-    display: none;
-  }
-  
-  .report-table, .report-table tbody, .report-table tr, .report-table td {
-    display: block;
-    width: 100%;
-  }
-  
-  .report-table tr {
-    margin-bottom: 15px;
-  }
-  
-  .report-table td {
-    text-align: right;
-    padding-left: 50%;
-    position: relative;
-  }
-  
-  .report-table td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 15px;
-    width: calc(50% - 30px);
-    padding-right: 10px;
-    font-weight: 600;
-    text-align: left;
-    color: #555;
-  }
+.status-open {
+  background: #ffe5e5;
+  color: #c62828;
+}
+
+.status-progress {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-resolved {
+  background: #e6f4ea;
+  color: #2e7d32;
 }

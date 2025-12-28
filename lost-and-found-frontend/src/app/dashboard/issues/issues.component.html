@@ -1,26 +1,51 @@
-<div class="container"><div class="content area">
-  <h2>Your Issues</h2>
+<div class="container">
+  <div class="content-area">
 
-<div *ngIf="foundItems.length === 0">
-  <p>You have not reported any issues yet.</p>
+    <h2>Issues</h2>
+
+    <table class="report-table" *ngIf="issues.length > 0">
+      <thead>
+        <tr>
+          <th>Department</th>
+          <th>Description</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th *ngIf="isAdmin">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let issue of issues">
+          <td>{{ issue.issueDept }}</td>
+          <td>{{ issue.description }}</td>
+          <td>{{ issue.location }}</td>
+
+          <!-- USER VIEW -->
+          <td *ngIf="!isAdmin">
+            <span class="status-badge" [ngClass]="getStatusClass(issue.status)">
+              {{ issue.status }}
+            </span>
+          </td>
+
+          <!-- ADMIN VIEW -->
+          <td *ngIf="isAdmin">
+            <select [(ngModel)]="issue.status">
+              <option value="Open">Open</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+          </td>
+
+          <td *ngIf="isAdmin">
+            <button class="register-btn" (click)="updateStatus(issue)">
+              Save
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="issues.length === 0">No issues found.</p>
+
+  </div>
 </div>
-
-<table *ngIf="foundItems.length > 0" class="report-table">
-  <thead>
-    <tr>
-      <th>Item</th>
-      <th>Description</th>
-      <th>Location</th>
-      <th>email</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let item of foundItems">
-      <td>{{ item.itemName }}</td>
-      <td>{{ item.description }}</td>
-      <td>{{ item.location }}</td>
-      <td>{{ item.email }}</td>
-    </tr>
-  </tbody>
-</table>
-</div></div>

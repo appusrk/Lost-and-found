@@ -7,12 +7,12 @@
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease; /* smooth transition */
-  padding: 0.8rem 2rem; /* default padding */
+  transition: all 0.3s ease; 
+  padding: 0.8rem 2rem;
 }
 
 .header-box.shrink {
-  padding: 0.4rem 2rem;   /* smaller padding on scroll */
+  padding: 0.4rem 2rem; 
 }
 
 .navbar .nav-link {
@@ -22,10 +22,10 @@
 }
 
 .header-box.shrink heading {
-  font-size: 1rem;  /* reduce logo size on scroll */
+  font-size: 1rem;  
 }
 .brand-name {
-  font-size: 1.6rem;      /* big & visible */
+  font-size: 1.6rem;      
   font-weight: 700;
   color: #fff;
   display: flex;

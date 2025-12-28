@@ -38,7 +38,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   saveChanges() {
-    // SAVE BACK TO THE SAME KEY YOU LOADED FROM
+    
     localStorage.setItem('user', JSON.stringify(this.user));
 
     alert("Profile updated!");

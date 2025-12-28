@@ -29,11 +29,16 @@ confirmPassword = '';
 
 showUSN = false;
 showEmployeeId = false;
+showDeptext = false;
+showDept = false;
+
 
 // 🔥 Toggle fields based on role
 onRoleChange() {
 this.showUSN = this.userLevel === 'student';
-this.showEmployeeId = this.userLevel === 'faculty';
+this.showDeptext = this.userLevel === 'faculty' || this.userLevel === 'student';
+this.showDept = this.userLevel === 'admin';
+this.showEmployeeId = this.userLevel === 'faculty' || this.userLevel === 'admin';
 }
 
 showSnack(message: string, panelClass: string = 'default-snackbar') {
@@ -58,8 +63,8 @@ if (this.password !== this.confirmPassword) {
 
 const registerData = {
   name: this.name,
-  usn: this.userLevel === 'student' ? this.usn : null,
-  employeeId: this.userLevel === 'faculty' ? this.employeeId : null,
+  usn:  this.usn,
+  //employeeId: this.userLevel === 'faculty' || this.userLevel === 'admin' ? this.employeeId : null,
   department: this.department,
   userLevel: this.userLevel,
   email: this.email,
