@@ -3,7 +3,9 @@
 
     <h2>Issues</h2>
 
-    <table class="report-table" *ngIf="issues.length > 0">
+    <p *ngIf="issues.length === 0">No issues found.</p>
+
+    <table *ngIf="issues.length > 0" class="report-table">
       <thead>
         <tr>
           <th>Department</th>
@@ -16,18 +18,26 @@
 
       <tbody>
         <tr *ngFor="let issue of issues">
+
           <td>{{ issue.issueDept }}</td>
           <td>{{ issue.description }}</td>
           <td>{{ issue.location }}</td>
 
-          <!-- USER VIEW -->
+          <!-- ✅ NORMAL USER: COLORED BADGE -->
           <td *ngIf="!isAdmin">
-            <span class="status-badge" [ngClass]="getStatusClass(issue.status)">
+            <span
+              class="status-badge"
+              [ngClass]="{
+                'status-open': issue.status === 'Open',
+                'status-progress': issue.status === 'In Progress',
+                'status-resolved': issue.status === 'Resolved'
+              }"
+            >
               {{ issue.status }}
             </span>
           </td>
 
-          <!-- ADMIN VIEW -->
+          <!-- ✅ ADMIN: DROPDOWN -->
           <td *ngIf="isAdmin">
             <select [(ngModel)]="issue.status">
               <option value="Open">Open</option>
@@ -36,16 +46,16 @@
             </select>
           </td>
 
+          <!-- ✅ ADMIN ACTION -->
           <td *ngIf="isAdmin">
             <button class="register-btn" (click)="updateStatus(issue)">
               Save
             </button>
           </td>
+
         </tr>
       </tbody>
     </table>
-
-    <p *ngIf="issues.length === 0">No issues found.</p>
 
   </div>
 </div>
