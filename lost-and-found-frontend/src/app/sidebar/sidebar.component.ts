@@ -10,9 +10,13 @@ import { Router } from '@angular/router';
 })
 export class SidebarComponent {
   constructor(private router: Router) {}
-  logout() {
-  localStorage.clear();
-  this.router.navigate(['/login']);
+  Logout() {
+  const confirmLogout = confirm('Are you sure you want to logout?');
+  if (confirmLogout) {
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
 }
+
 
 }

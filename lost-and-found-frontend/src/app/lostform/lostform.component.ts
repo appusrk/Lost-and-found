@@ -29,6 +29,19 @@ export class LostComponent {
     const currentUser = userJson ? JSON.parse(userJson) : { usn: '' };
     this.submitFoundItem(form, currentUser);
   }
+  isDirty = false;
+
+onInputChange() {
+  this.isDirty = true;
+}
+
+canDeactivate(): boolean {
+  if (this.isDirty) {
+    return confirm('You have unsaved changes. Leave anyway?');
+  }
+  return true;
+}
+
     submitFoundItem(form: any, user: any) { // user passed from parent or fetched from user service
       if (form.invalid) {
         Swal.fire('⚠️ Fill all fields', 'Please complete the form', 'warning');

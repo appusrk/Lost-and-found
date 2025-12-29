@@ -28,10 +28,14 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
-  logout() {
+ logout() {
+  const confirmLogout = confirm('Are you sure you want to logout?');
+  if (confirmLogout) {
     localStorage.clear();
     this.router.navigate(['/login']);
   }
+}
+
 
   openEdit() {
     this.editMode = true;

@@ -9,15 +9,17 @@ import { IssuesformComponent } from './issuesform/issuesform.component';
 import { IssuesComponent } from './dashboard/issues/issues.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { AdminpannelComponent } from './adminpannel/adminpannel.component';
+import { UnsavedChangesGuard } from './guard/unsaved-changes.guard';
+
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: RegisterComponent },
-  { path: 'lostform', component: LostComponent },
-  { path: 'findform', component: FoundComponent },
+  { path: 'lostform', component: LostComponent, canDeactivate: [UnsavedChangesGuard] },
+  { path: 'findform', component: FoundComponent, canDeactivate: [UnsavedChangesGuard] },
   { path: 'forgotpassword',  component: ForgotPasswordComponent },
-  { path: 'issuesform', component: IssuesformComponent},
+  { path: 'issuesform', component: IssuesformComponent, canDeactivate: [UnsavedChangesGuard]},
   { path: 'adminpanel', component: AdminpannelComponent},
 
   {

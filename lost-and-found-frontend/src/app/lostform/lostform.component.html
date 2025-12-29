@@ -9,7 +9,7 @@
       <!-- Name -->
       <div class="form-group">
         <input type="text" placeholder="Item Name*" name="name"
-               [(ngModel)]="itemname" required minlength="2" maxlength="50" #nameRef="ngModel" />
+               [(ngModel)]="itemname" required minlength="2" maxlength="50" #nameRef="ngModel" (input)="onInputChange()" />
         <div *ngIf="nameRef.invalid && nameRef.touched" class="text-danger">
           <small *ngIf="nameRef.errors?.['required']">Name is required</small>
         </div>
@@ -18,13 +18,13 @@
       <!--Description -->
       <div class="form-group">
         <input type="text" placeholder="Description*" name="description"
-               [(ngModel)]="description" required #desRef="ngModel" />
+               [(ngModel)]="description" required #desRef="ngModel" (input)="onInputChange()"/>
       </div>
 
       <!--Location -->
       <div class="form-group">
         <input type="text" placeholder="Location*" name="location"
-               [(ngModel)]="location" required #departmentRef="ngModel" />
+               [(ngModel)]="location" required #departmentRef="ngModel" (input)="onInputChange()"/>
         <div *ngIf="departmentRef.invalid && departmentRef.touched" class="text-danger">
           <small>Please specify the location</small>
         </div>
@@ -33,7 +33,7 @@
 
     <div class="form-group">
         <input type="text" placeholder="Email*" name="email"
-               [(ngModel)]="email" required #emailRef="ngModel" />
+               [(ngModel)]="email" required #emailRef="ngModel" (input)="onInputChange()"/>
         <div *ngIf="emailRef.invalid && emailRef.touched" class="text-danger">
           <small>Please enter your email</small>
         </div>

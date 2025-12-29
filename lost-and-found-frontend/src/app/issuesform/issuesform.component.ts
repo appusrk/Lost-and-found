@@ -30,6 +30,19 @@ export class IssuesformComponent {
     const currentUser = userJson ? JSON.parse(userJson) : { usn: '' };
     this.submitIssue(form, currentUser);
   }
+  isDirty = false;
+
+onInputChange() {
+  this.isDirty = true;
+}
+
+canDeactivate(): boolean {
+  if (this.isDirty) {
+    return confirm('You have unsaved changes. Leave anyway?');
+  }
+  return true;
+}
+
 
   submitIssue(form: NgForm, user: any) {
     if (form.invalid) {
