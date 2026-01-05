@@ -1,60 +1,49 @@
 .dashboard-layout {
   display: flex;
-  margin-top: 50px; /* offset for header */
-  height: calc(100vh - 65px);
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Sidebar stays on the left */
+/* Sidebar should overlay, not push */
 app-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 250px;
-  flex-shrink: 0;
+  height: 100vh;
+  z-index: 1000;
 }
 
-/* Dashboard content on the right */
+/* Main dashboard content */
 .dashboard-content {
   flex: 1;
-  padding: 3rem;
-  background: rgba(255, 255, 255, 0.05);
+  width: 100%;
+  padding: 1rem;
+  margin-left: 0;
+  overflow-y: auto;
+
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  
 }
 
-/* Button container */
+/* Buttons visible immediately */
 .buttons {
   display: flex;
-  gap: 2rem;
- 
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-/* Buttons styling */
+/* Buttons */
 .dash-btn {
-  padding: 1.2rem 2.5rem;
-  font-size: 1.2rem;
-  border: 2px solid #007bff;
-  background: white;
-  color: #007bff;
+  padding: 1rem 1.8rem;
+  font-size: 1rem;
+  border: none;
   border-radius: 12px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.dash-btn:hover {
-  background: #007bff;
+  background: #2575fc;
   color: white;
-  transform: scale(1.05);
-}
-
-/* Responsive: stack buttons on smaller screens */
-@media (max-width: 768px) {
-  .dashboard-layout {
-    flex-direction: column;
-  }
-
-  .buttons {
-    flex-direction: column;
-    align-items: center;
-    
-  }
+  font-weight: 600;
+  min-width: 120px;
 }
