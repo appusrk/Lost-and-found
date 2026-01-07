@@ -26,6 +26,8 @@ public class LostItemController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+private MatchingServices matchingServices;
 
     private final Path uploadDir = Paths.get("uploads");
 
@@ -76,6 +78,7 @@ public class LostItemController {
             }
 
             lostItemRepository.save(lostItem);
+            matchingServices.findMatchesForLost(lostItem);
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Lost item added successfully");
