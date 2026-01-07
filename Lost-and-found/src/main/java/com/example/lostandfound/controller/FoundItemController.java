@@ -28,6 +28,8 @@ public class FoundItemController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+private MatchingServices matchingServices;
 
     private final Path uploadDir = Paths.get("uploads");
     
@@ -79,6 +81,7 @@ public class FoundItemController {
             }
 
             foundItemRepository.save(foundItem);
+            matchingServices.findMatchesForFound(foundItem);
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Found item added successfully");
