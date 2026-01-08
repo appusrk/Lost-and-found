@@ -37,13 +37,36 @@ public class MatchingServices {
     // ---------------- HELPER FUNCTIONS ----------------
 
     private boolean isNameSimilar(String name1, String name2) {
-        if (name1 == null || name2 == null) return false;
-        name1 = name1.toLowerCase();
-        name2 = name2.toLowerCase();
-        int distance = LevenshteinDistance.getDefaultInstance().apply(name1, name2);
-        int maxLen = Math.max(name1.length(), name2.length());
-        return ((double) distance / maxLen) <= 0.3;
+    if (name1 == null || name2 == null) return false;
+
+    String[] tokens1 = name1.toLowerCase().split("\\s+");
+    String[] tokens2 = name2.toLowerCase().split("\\s+");
+
+    int matches = 0;
+    for (String t1 : tokens1) {
+        for (String t2 : tokens2) {
+            if (t1.equals(t2)) matches++;
+        }
     }
+    double similarity = (2.0 * matches) / (tokens1.length + tokens2.length);
+    return similarity >= 0.5; // threshold: 50% words match
+}
+private boolean isLocSimilar(String name1, String name2) {
+    if (name1 == null || name2 == null) return false;
+
+    String[] tokens1 = name1.toLowerCase().split("\\s+");
+    String[] tokens2 = name2.toLowerCase().split("\\s+");
+
+    int matches = 0;
+    for (String t1 : tokens1) {
+        for (String t2 : tokens2) {
+            if (t1.equals(t2)) matches++;
+        }
+    }
+    double similarity = (2.0 * matches) / (tokens1.length + tokens2.length);
+    return similarity >= 0.5; // threshold: 50% words match
+}
+
 
     private boolean isDescriptionSimilar(String d1, String d2) {
         if (d1 == null || d2 == null) return false;
@@ -92,7 +115,7 @@ public class MatchingServices {
                     boolean imageCondition = imageMatch || lost.getImageUrl() == null || f.getImageUrl() == null;
 
                     return (basicMatch || imageCondition)
-                            && f.getLocation().equalsIgnoreCase(lost.getLocation());
+                            && isLocSimilar(f.getLocation(),lost.getLocation());
                 })
                 .collect(Collectors.toList());
 
@@ -148,7 +171,7 @@ public class MatchingServices {
                     boolean imageCondition = imageMatch || found.getImageUrl() == null || l.getImageUrl() == null;
 
                     return (basicMatch || imageCondition)
-                            && l.getLocation().equalsIgnoreCase(found.getLocation());
+                            && isLocSimilar(l.getLocation(),found.getLocation());
                 })
                 .collect(Collectors.toList());
 
