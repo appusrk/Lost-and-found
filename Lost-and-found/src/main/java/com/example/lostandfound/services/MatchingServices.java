@@ -39,30 +39,58 @@ public class MatchingServices {
     private boolean isNameSimilar(String name1, String name2) {
     if (name1 == null || name2 == null) return false;
 
+    // Convert to lowercase and split into tokens
     String[] tokens1 = name1.toLowerCase().split("\\s+");
     String[] tokens2 = name2.toLowerCase().split("\\s+");
 
+    // Optional: ignore common words like "the", "at", "in"
+    Set<String> stopWords = new HashSet<>(Arrays.asList("the", "at", "in", "on", "and", "&"));
+    
+    LevenshteinDistance ld = new LevenshteinDistance();
     int matches = 0;
+
     for (String t1 : tokens1) {
+        if (stopWords.contains(t1)) continue; // ignore stop words
         for (String t2 : tokens2) {
-            if (t1.equals(t2)) matches++;
+            if (stopWords.contains(t2)) continue;
+            
+            // Exact match or fuzzy match (distance <=1)
+            if (t1.equals(t2) || ld.apply(t1, t2) <= 1) {
+                matches++;
+                break; // move to next t1 token after first match
+            }
         }
     }
+
     double similarity = (2.0 * matches) / (tokens1.length + tokens2.length);
     return similarity >= 0.5; // threshold: 50% words match
 }
 private boolean isLocSimilar(String name1, String name2) {
     if (name1 == null || name2 == null) return false;
 
+    // Convert to lowercase and split into tokens
     String[] tokens1 = name1.toLowerCase().split("\\s+");
     String[] tokens2 = name2.toLowerCase().split("\\s+");
 
+    // Optional: ignore common words like "the", "at", "in"
+    Set<String> stopWords = new HashSet<>(Arrays.asList("the", "at", "in", "on", "and", "&"));
+    
+    LevenshteinDistance ld = new LevenshteinDistance();
     int matches = 0;
+
     for (String t1 : tokens1) {
+        if (stopWords.contains(t1)) continue; // ignore stop words
         for (String t2 : tokens2) {
-            if (t1.equals(t2)) matches++;
+            if (stopWords.contains(t2)) continue;
+            
+            // Exact match or fuzzy match (distance <=1)
+            if (t1.equals(t2) || ld.apply(t1, t2) <= 1) {
+                matches++;
+                break; // move to next t1 token after first match
+            }
         }
     }
+
     double similarity = (2.0 * matches) / (tokens1.length + tokens2.length);
     return similarity >= 0.5; // threshold: 50% words match
 }
