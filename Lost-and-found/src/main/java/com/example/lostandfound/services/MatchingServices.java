@@ -10,7 +10,7 @@ import com.example.lostandfound.repository.MatchingHistoryRepository;
 import org.springframework.stereotype.Service;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
